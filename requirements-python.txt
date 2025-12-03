@@ -1,0 +1,6 @@
+http.server
+socket
+os
+json
+urllib.parse
+mimetypes

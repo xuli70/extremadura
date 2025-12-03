@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Dashboard móvil de salud y situación laboral de Extremadura">
+    <meta name="theme-color" content="#0ea5e9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Dashboard Extremadura">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- CSS -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.8.1/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.8.0/umd/Recharts.js"></script>
+    <script src="https://unpkg.com/lucide-react@0.263.1/umd/lucide-react.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <title>Dashboard Extremadura Móvil</title>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            z-index: 50;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        .mobile-nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            text-align: center;
+            transition: color 0.2s;
+        }
+        
+        .mobile-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f3f4f6;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { BrowserRouter, Routes, Route, useLocation, useNavigate } = ReactRouterDOM;
+        const { 
+            LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, 
+            BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area, 
+            RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
+        } = Recharts;
+        const { 
+            Home, TrendingUp, Heart, BarChart3, Users, Menu, Bell,
+            TrendingDown, Briefcase, Users as UsersIcon, Shield, Activity,
+            DollarSign, Calendar, Clock, Target, Award, Info, RefreshCw,
+            Download, Moon, Sun, Volume2, Shield as ShieldIcon,
+            Smile, Brain, MapPin, Flag, AlertTriangle, CheckCircle,
+            GraduationCap
+        } = lucideReact;
+
+        // Datos de Extremadura 2024
+        const extremaduraData2024 = {
+            poblacion: {
+                total: 1067711,
+                activo: 523450,
+                inactivo: 544261,
+                tasas: {
+                    actividad: 49.0,
+                    empleo: 45.2,
+                    paro: 7.8
+                }
+            },
+            demografiaEdad: {
+                '16-24': { poblacion: 89756, activo: 43892, empleado: 35804, paro: 8088, inactivo: 45864, tasas: { actividad: 48.9, empleo: 39.9, paro: 18.4 } },
+                '25-34': { poblacion: 136847, activo: 108923, empleado: 98908, paro: 10015, inactivo: 27924, tasas: { actividad: 79.6, empleo: 72.3, paro: 9.2 } },
+                '35-44': { poblacion: 152789, activo: 132567, empleado: 124890, paro: 7677, inactivo: 20222, tasas: { actividad: 86.8, empleo: 81.7, paro: 5.8 } },
+                '45-54': { poblacion: 145623, activo: 121789, empleado: 115678, paro: 6111, inactivo: 23834, tasas: { actividad: 83.6, empleo: 79.4, paro: 5.0 } },
+                '55-64': { poblacion: 128456, activo: 89634, empleado: 83456, paro: 6178, inactivo: 38822, tasas: { actividad: 69.8, empleo: 65.0, paro: 6.9 } },
+                '65+': { poblacion: 272240, activo: 26645, empleado: 23714, paro: 2931, inactivo: 245595, tasas: { actividad: 9.8, empleo: 8.7, paro: 11.0 } }
+            },
+            sectores: {
+                agricultura: { empleados: 45678, porcentaje: 8.7, variacion: -2.1 },
+                industria: { empleados: 34567, porcentaje: 6.6, variacion: 1.2 },
+                construccion: { empleados: 67890, porcentaje: 13.0, variacion: 0.8 },
+                servicios: { empleados: 375234, porcentaje: 71.7, variacion: 0.5 }
+            },
+            jubilacion: {
+                pensionistas_activos: 298765,
+                pension_promedio: 891.45,
+                pension_minima: 407.90,
+                pension_maxima: 2789.60,
+                edad_promedio_jubilacion: 64.2,
+                jubilacion_anticipada: 12.3,
+                jubilacion_parcial: 3.7
+            },
+            saludLaboral: {
+                accidentes_trabajo: 1847,
+                tasa_accidentes: 3.5,
+                accidentes_mortales: 4,
+                dias_perdidos_absentismo: 2456789,
+                tasa_absentismo: 4.7,
+                enfermedades_profesionales: 234,
+                reconocimientos_medicos: 89.5,
+                formacion_prevencion: 67.8
+            },
+            bienestar: {
+                satisfaccion_trabajo: 6.8,
+                equilibrio_vida_trabajo: 7.1,
+                estres_laboral: 5.4,
+                formacion_profesional: 8.2,
+                beneficios_sociales: 7.9,
+                desarrollo_carrera: 6.5,
+                ambiente_trabajo: 7.4
+            }
+        };
+
+        // Función de navegación
+        const Navigation = ({ currentPage, onNavigate }) => {
+            const navItems = [
+                { id: 'inicio', icon: Home, label: 'Inicio' },
+                { id: 'mercado-laboral', icon: TrendingUp, label: 'Mercado' },
+                { id: 'salud-laboral', icon: Heart, label: 'Salud' },
+                { id: 'jubilacion', icon: Calendar, label: 'Jubilación' },
+                { id: 'bienestar', icon: Smile, label: 'Bienestar' },
+                { id: 'kpis', icon: BarChart3, label: 'KPIs' }
+            ];
+
+            return (
+                <nav className="mobile-nav" style={{
+                    display: 'flex',
+                    height: '60px'
+                }}>
+                    {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = currentPage === item.id;
+                        return (
+                            <div
+                                key={item.id}
+                                className="mobile-nav-item"
+                                onClick={() => onNavigate(item.id)}
+                                style={{
+                                    color: isActive ? '#0ea5e9' : '#6b7280',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <Icon size={20} />
+                                <span style={{ fontSize: '10px', marginTop: '2px' }}>
+                                    {item.label}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </nav>
+            );
+        };
+
+        // Página de Inicio
+        const InicioPage = () => (
+            <div className="animate-fadeInUp">
+                <div className="mobile-card">
+                    <h2 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>
+                        Dashboard Extremadura 2024
+                    </h2>
+                    <p style={{ color: '#6b7280', margin: '0 0 1rem 0' }}>
+                        Datos de salud y situación laboral
+                    </p>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '1rem',
+                        marginTop: '1rem'
+                    }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0ea5e9' }}>
+                                {extremaduraData2024.poblacion.total.toLocaleString()}
+                            </div>
+                            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                                Población Total
+                            </div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>
+                                {extremaduraData2024.poblacion.tasas.empleo}%
+                            </div>
+                            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                                Tasa de Empleo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mobile-card">
+                    <h3 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>
+                        Navegación Rápida
+                    </h3>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '0.5rem'
+                    }}>
+                        <div style={{
+                            padding: '0.75rem',
+                            background: '#f3f4f6',
+                            borderRadius: '0.5rem',
+                            textAlign: 'center',
+                            fontSize: '0.875rem'
+                        }}>
+                            Mercado Laboral
+                        </div>
+                        <div style={{
+                            padding: '0.75rem',
+                            background: '#f3f4f6',
+                            borderRadius: '0.5rem',
+                            textAlign: 'center',
+                            fontSize: '0.875rem'
+                        }}>
+                            Salud Laboral
+                        </div>
+                        <div style={{
+                            padding: '0.75rem',
+                            background: '#f3f4f6',
+                            borderRadius: '0.5rem',
+                            textAlign: 'center',
+                            fontSize: '0.875rem'
+                        }}>
+                            Jubilación
+                        </div>
+                        <div style={{
+                            padding: '0.75rem',
+                            background: '#f3f4f6',
+                            borderRadius: '0.5rem',
+                            textAlign: 'center',
+                            fontSize: '0.875rem'
+                        }}>
+                            Bienestar
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // Página de Mercado Laboral
+        const MercadoLaboralPage = () => (
+            <div className="animate-fadeInUp">
+                <div className="mobile-card">
+                    <h2 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>
+                        Mercado Laboral
+                    </h2>
+                    <div style={{ marginTop: '1rem' }}>
+                        <div style={{
+                            height: '200px',
+                            width: '100%',
+                            background: '#f9fafb',
+                            borderRadius: '0.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#6b7280'
+                        }}>
+                            Gráfico de Sectores
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mobile-card">
+                    <h3 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>
+                        Sectores Económicos
+                    </h3>
+                    {Object.entries(extremaduraData2024.sectores).map(([sector, datos]) => (
+                        <div key={sector} style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '0.75rem 0',
+                            borderBottom: '1px solid #f3f4f6'
+                        }}>
+                            <div>
+                                <div style={{ fontWeight: '500', textTransform: 'capitalize' }}>
+                                    {sector}
+                                </div>
+                                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                                    {datos.empleados.toLocaleString()} empleados
+                                </div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                                <div style={{ fontWeight: '500', color: '#0ea5e9' }}>
+                                    {datos.porcentaje}%
+                                </div>
+                                <div style={{
+                                    fontSize: '0.75rem',
+                                    color: datos.variacion > 0 ? '#10b981' : '#ef4444'
+                                }}>
+                                    {datos.variacion > 0 ? '+' : ''}{datos.variacion}%
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        // Página de Salud Laboral
+        const SaludLaboralPage = () => (
+            <div className="animate-fadeInUp">
+                <div className="mobile-card">
+                    <h2 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>
+                        Salud Laboral
+                    </h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef4444' }}>
+                                {extremaduraData2024.saludLaboral.accidentes_trabajo}
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                                Accidentes de Trabajo
+                            </div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#10b981' }}>
+                                {extremaduraData2024.saludLaboral.tasa_absentismo}%
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                                Tasa de Absentismo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mobile-card">
+                    <h3 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>
+                        Indicadores de Seguridad
+                    </h3>
+                    <div style={{ space: '1rem' }}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '0.75rem 0',
+                            borderBottom: '1px solid #f3f4f6'
+                        }}>
+                            <span>Tasa de Accidentes</span>
+                            <span style={{ fontWeight: '500', color: '#0ea5e9' }}>
+                                {extremaduraData2024.saludLaboral.tasa_accidentes}%
+                            </span>
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '0.75rem 0',
+                            borderBottom: '1px solid #f3f4f6'
+                        }}>
+                            <span>Enfermedades Profesionales</span>
+                            <span style={{ fontWeight: '500', color: '#0ea5e9' }}>
+                                {extremaduraData2024.saludLaboral.enfermedades_profesionales}
+                            </span>
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '0.75rem 0'
+                        }}>
+                            <span>Formación en Prevención</span>
+                            <span style={{ fontWeight: '500', color: '#10b981' }}>
+                                {extremaduraData2024.saludLaboral.formacion_prevencion}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // Aplicación principal
+        const App = () => {
+            const [currentPage, setCurrentPage] = useState('inicio');
+
+            const navigateTo = (page) => {
+                setCurrentPage(page);
+            };
+
+            const renderPage = () => {
+                switch (currentPage) {
+                    case 'inicio':
+                        return <InicioPage />;
+                    case 'mercado-laboral':
+                        return <MercadoLaboralPage />;
+                    case 'salud-laboral':
+                        return <SaludLaboralPage />;
+                    default:
+                        return <InicioPage />;
+                }
+            };
+
+            return (
+                <div style={{ 
+                    paddingBottom: '80px',
+                    minHeight: '100vh',
+                    backgroundColor: '#f8fafc'
+                }}>
+                    <div style={{ padding: '1rem' }}>
+                        {renderPage()}
+                    </div>
+                    <Navigation currentPage={currentPage} onNavigate={navigateTo} />
+                </div>
+            );
+        };
+
+        // Renderizar la aplicación
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

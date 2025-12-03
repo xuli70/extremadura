@@ -1,0 +1,5 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#0ea5e9" rx="40"/>
+  <text x="256" y="290" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="120" font-weight="bold">EXT</text>
+  <text x="256" y="370" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="36">Dashboard</text>
+</svg>
