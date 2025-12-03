@@ -10,16 +10,16 @@ Este archivo contiene las instrucciones completas para instalar y ejecutar el Da
 
 ## 🚀 Instalación y Ejecución
 
-### Opción 1: Servidor Python Simple (Recomendado)
+### Opción 1: Servidor Python Simple
 
-1. **Descomprimir el archivo ZIP**
+1. **Clonar el repositorio**
    ```bash
-   # Extrae el contenido del ZIP en una carpeta de tu elección
+   git clone https://github.com/xuli70/extremadura.git
    ```
 
 2. **Abrir terminal en la carpeta del proyecto**
    ```bash
-   cd extremadura-dashboard-completo
+   cd extremadura
    ```
 
 3. **Ejecutar el servidor Python**
@@ -34,11 +34,17 @@ Este archivo contiene las instrucciones completas para instalar y ejecutar el Da
    http://localhost:3000
    ```
 
-### Opción 2: Servidor Vite (Para desarrollo)
+### Opción 2: Servidor Vite (Recomendado para desarrollo)
 
 Si quieres usar el servidor de desarrollo con recarga automática:
 
-1. **Instalar dependencias**
+1. **Clonar el repositorio** (si no lo has hecho)
+   ```bash
+   git clone https://github.com/xuli70/extremadura.git
+   cd extremadura
+   ```
+
+2. **Instalar dependencias**
    ```bash
    npm install
    # o si usas yarn
@@ -54,7 +60,7 @@ Si quieres usar el servidor de desarrollo con recarga automática:
 
 3. **Abrir en el navegador**
    ```
-   http://localhost:5173
+   http://localhost:3000
    ```
 
 ## 📱 Funcionalidades del Dashboard
@@ -121,11 +127,11 @@ taskkill /PID <PID> /F
 - **PWA**: Service Worker para cacheo
 - **Responsivo**: Diseño optimizado para móvil y escritorio
 
-## 🔗 Enlaces de Descarga
+## 🔗 Repositorio
 
-Si necesitas actualizaciones, las nuevas versiones estarán disponibles en el mismo enlace de descarga.
+- **GitHub**: https://github.com/xuli70/extremadura
 
 ---
 
-**Desarrollado para el Dashboard de Extremadura**  
+**Dashboard Extremadura Móvil 2024**
 *Aplicación móvil responsive con datos de salud y mercado laboral*

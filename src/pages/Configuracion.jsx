@@ -207,7 +207,7 @@ const Configuracion = () => {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Desarrollado por</span>
-            <span className="font-medium">MiniMax Agent</span>
+            <span className="font-medium">XULI Master</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Fuentes de datos</span>

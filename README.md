@@ -43,8 +43,8 @@ Dashboard móvil de salud y situación laboral de Extremadura - España. Una apl
 
 1. **Clonar el repositorio**
    ```bash
-   git clone <url-del-repositorio>
-   cd dashboard-extremadura-movil
+   git clone https://github.com/xuli70/extremadura.git
+   cd extremadura
    ```
 
 2. **Instalar dependencias**
@@ -65,7 +65,7 @@ Dashboard móvil de salud y situación laboral de Extremadura - España. Una apl
 ## 🏗️ Estructura del Proyecto
 
 ```
-dashboard-extremadura-movil/
+extremadura/
 ├── public/
 │   ├── index.html
 │   ├── manifest.json
@@ -224,4 +224,4 @@ Para reportar problemas o sugerir mejoras:
 
 ---
 
-**Desarrollado por MiniMax Agent** | Dashboard Extremadura Móvil 2024
+**Dashboard Extremadura Móvil 2024** | [Repositorio GitHub](https://github.com/xuli70/extremadura)
