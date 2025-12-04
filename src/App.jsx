@@ -11,6 +11,7 @@ import Jubilacion from './pages/Jubilacion'
 import Bienestar from './pages/Bienestar'
 import KPIs from './pages/KPIs'
 import Configuracion from './pages/Configuracion'
+import Trazabilidad from './pages/Trazabilidad'
 
 // Componentes de navegación
 import BottomNavigation from './components/BottomNavigation'
@@ -91,6 +92,7 @@ function App() {
           <Route path="/comparaciones" element={<Comparaciones />} />
           <Route path="/kpis" element={<KPIs />} />
           <Route path="/configuracion" element={<Configuracion />} />
+          <Route path="/trazabilidad" element={<Trazabilidad />} />
         </Routes>
       </main>
 

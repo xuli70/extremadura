@@ -1,7 +1,10 @@
 import React from 'react'
-import { Bell, RefreshCw, Download, Info, Moon, Sun, Volume2, Shield } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Bell, RefreshCw, Download, Info, Moon, Sun, Volume2, Shield, FileSearch, ChevronRight } from 'lucide-react'
 
 const Configuracion = () => {
+  const navigate = useNavigate()
+
   return (
     <div className="p-4 pb-24 space-y-6">
       {/* Header */}
@@ -9,6 +12,25 @@ const Configuracion = () => {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Configuración</h2>
         <p className="text-gray-600">Personaliza tu experiencia</p>
       </div>
+
+      {/* Trazabilidad de Datos - Destacado */}
+      <button
+        onClick={() => navigate('/trazabilidad')}
+        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl p-4 shadow-lg"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+              <FileSearch className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-left">
+              <p className="font-semibold">Trazabilidad de Datos</p>
+              <p className="text-sm text-indigo-200">Panel de auditoría y verificación</p>
+            </div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-white/80" />
+        </div>
+      </button>
 
       {/* Notificaciones */}
       <div className="mobile-card">
@@ -211,7 +233,7 @@ const Configuracion = () => {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Fuentes de datos</span>
-            <span className="text-primary-600">Ver fuentes</span>
+            <button onClick={() => navigate('/trazabilidad')} className="text-primary-600 hover:underline">Ver fuentes</button>
           </div>
         </div>
       </div>
