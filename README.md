@@ -11,6 +11,7 @@ Dashboard móvil de salud y situación laboral de Extremadura - España. Una apl
 - **Datos reales**: Información oficial de 2024 de Extremadura
 - **Modo offline**: Funcionalidad sin conexión a internet
 - **Pull to refresh**: Actualización al deslizar hacia abajo
+- **Trazabilidad de datos**: Panel de auditoría con verificación de fuentes
 
 ## 📱 Páginas Principales
 
@@ -22,6 +23,7 @@ Dashboard móvil de salud y situación laboral de Extremadura - España. Una apl
 6. **Comparaciones**: Extremadura vs España y otras CCAA
 7. **KPIs**: Indicadores clave de rendimiento
 8. **Configuración**: Ajustes de la aplicación
+9. **Trazabilidad**: Panel de auditoría y verificación de datos
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -75,7 +77,8 @@ extremadura/
 │   │   ├── BottomNavigation.jsx
 │   │   └── PullToRefresh.jsx
 │   ├── data/
-│   │   └── extremaduraData.js
+│   │   ├── extremaduraData.js
+│   │   └── trazabilidadData.js
 │   ├── pages/
 │   │   ├── VisionGeneral.jsx
 │   │   ├── MercadoLaboral.jsx
@@ -84,7 +87,10 @@ extremadura/
 │   │   ├── Bienestar.jsx
 │   │   ├── Comparaciones.jsx
 │   │   ├── KPIs.jsx
-│   │   └── Configuracion.jsx
+│   │   ├── Configuracion.jsx
+│   │   └── Trazabilidad.jsx
+│   ├── services/
+│   │   └── verificacionService.js
 │   ├── App.jsx
 │   ├── main.jsx
 │   └── index.css
