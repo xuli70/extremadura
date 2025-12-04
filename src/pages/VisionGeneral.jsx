@@ -218,7 +218,11 @@ const VisionGeneral = () => {
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis dataKey="name" tick={{ fontSize: 10 }} />
               <YAxis tick={{ fontSize: 12 }} />
-              <Bar dataKey="empleados" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="empleados" radius={[4, 4, 0, 0]}>
+                {sectoresData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
